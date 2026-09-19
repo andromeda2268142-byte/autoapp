@@ -297,6 +297,52 @@
       .business-header .map-action { min-width:44px; padding:0 10px; }
       .business-header .map-action span { display:none; }
     }
+  
+    .biz-demo-nav { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px; }
+    .biz-demo-nav button { border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:9px 12px; font-size:11px; font-weight:850; display:flex; align-items:center; gap:7px; }
+    .biz-demo-nav button:hover { box-shadow:var(--shadow-sm); transform:translateY(-1px); }
+    .biz-demo-nav svg { width:15px; height:15px; }
+    .demo-section { margin-top:16px; }
+    .my-leads-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .purchased-lead { border:1px solid var(--line); border-radius:20px; background:#fff; padding:15px; cursor:pointer; transition:.18s; }
+    .purchased-lead:hover { transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+    .purchased-lead h3 { margin:0 0 7px; font-size:14px; }
+    .lead-status { display:inline-flex; align-items:center; gap:5px; padding:6px 8px; border-radius:999px; font-size:10px; font-weight:900; background:var(--mint-soft); color:#206b53; }
+    .lead-status.quoted { background:var(--violet-soft); color:#6547bf; }
+    .empty-leads { border:1px dashed #c9c6bc; border-radius:20px; padding:24px; text-align:center; background:#faf8f2; color:var(--muted); font-size:12px; }
+    .revenue-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    .rev-card { background:#fff; border:1px solid var(--line); border-radius:18px; padding:14px; }
+    .rev-card span { display:block; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.7px; font-weight:850; }
+    .rev-card strong { display:block; margin-top:5px; font-size:23px; letter-spacing:-.7px; }
+    .funnel { margin-top:14px; display:grid; gap:7px; }
+    .funnel-row { display:grid; grid-template-columns:110px 1fr 42px; gap:10px; align-items:center; font-size:10px; font-weight:800; }
+    .funnel-track { height:10px; border-radius:999px; background:#eeece5; overflow:hidden; }
+    .funnel-fill { height:100%; border-radius:inherit; background:var(--violet); }
+    .biz-backdrop { position:fixed; inset:0; z-index:1500; background:rgba(28,26,22,.38); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:.2s; }
+    .biz-backdrop.open { opacity:1; pointer-events:auto; }
+    .biz-modal { position:fixed; z-index:1550; left:50%; top:50%; width:min(560px,calc(100vw - 24px)); max-height:calc(100dvh - 24px); overflow:auto; background:var(--paper); border:1px solid var(--line); border-radius:28px; box-shadow:0 35px 90px rgba(28,25,20,.30); transform:translate(-50%,-46%) scale(.98); opacity:0; pointer-events:none; transition:.22s; padding:20px; }
+    .biz-modal.open { opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+    .lead-profile-hero { background:linear-gradient(135deg,var(--lime-soft),#fff9db); border-radius:22px; padding:17px; margin:8px 0 14px; }
+    .lead-profile-hero h3 { margin:0; font-size:21px; letter-spacing:-.5px; }
+    .lead-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:12px 0; }
+    .lead-info { border:1px solid var(--line); border-radius:15px; padding:11px; background:#fff; }
+    .lead-info span { display:block; color:var(--muted); font-size:9px; text-transform:uppercase; font-weight:850; letter-spacing:.6px; }
+    .lead-info strong { display:block; margin-top:4px; font-size:12px; }
+    .problem-box { border:1px solid var(--line); background:#f7f5ef; border-radius:16px; padding:13px; font-size:12px; line-height:1.55; margin:10px 0 15px; }
+    .contact-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+    .contact-actions button { min-height:44px; border-radius:14px; border:1px solid var(--line); background:#fff; font-weight:850; display:flex; align-items:center; justify-content:center; gap:7px; }
+    .contact-actions button.primary-contact { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .contact-actions svg { width:16px; }
+    .quote-preview { margin-top:12px; background:var(--violet-soft); border:1px solid #d8cdfb; border-radius:18px; padding:13px; }
+    .quote-preview strong { font-size:18px; }
+    @media (max-width: 700px) {
+      .my-leads-grid, .revenue-grid { grid-template-columns:1fr 1fr; }
+      .lead-info-grid, .contact-actions { grid-template-columns:1fr; }
+      .funnel-row { grid-template-columns:90px 1fr 34px; }
+      .biz-modal { bottom:8px; top:auto; transform:translate(-50%,110%); max-height:78dvh; border-radius:26px; }
+      .biz-modal.open { transform:translate(-50%,0); }
+    }
+
   </style>
 </head>
 <body>
@@ -431,7 +477,14 @@
         <div class="metric"><span>Response rate</span><strong>82%</strong></div>
       </div>
 
-      <div class="business-grid">
+      
+      <div class="biz-demo-nav">
+        <button onclick="scrollBiz('freshLeadsView')"><i data-lucide="radio"></i> Fresh Leads</button>
+        <button onclick="scrollBiz('myLeadsSection')"><i data-lucide="contact-round"></i> My Leads <span id="myLeadsCount">(0)</span></button>
+        <button onclick="scrollBiz('revenueSection')"><i data-lucide="chart-no-axes-combined"></i> Revenue & ROI</button>
+      </div>
+
+      <div class="business-grid" id="freshLeadsView">
         <div class="surface">
           <div class="section-title-row"><h2>Fresh leads near you</h2><span>Auto-refreshing demo</span></div>
           <div class="lead-list">
@@ -482,8 +535,71 @@
           </div>
         </div>
       </div>
+
+      <section class="surface demo-section" id="myLeadsSection">
+        <div class="section-title-row">
+          <h2>My unlocked leads</h2>
+          <span>Purchased leads stay here</span>
+        </div>
+        <div id="myLeadsList" class="my-leads-grid">
+          <div class="empty-leads" style="grid-column:1/-1">
+            Unlock a lead above and it will appear here with contact actions, quote status and follow-up.
+          </div>
+        </div>
+      </section>
+
+      <section class="surface demo-section" id="revenueSection">
+        <div class="section-title-row">
+          <h2>Business performance & platform revenue</h2>
+          <span>Demo analytics</span>
+        </div>
+        <div class="revenue-grid">
+          <div class="rev-card"><span>Leads sold</span><strong>184</strong><div class="small-muted">this month</div></div>
+          <div class="rev-card"><span>Lead revenue</span><strong>$3,920</strong><div class="small-muted">demo month</div></div>
+          <div class="rev-card"><span>Avg. lead price</span><strong>$21.30</strong><div class="small-muted">across categories</div></div>
+          <div class="rev-card"><span>Shop ROI</span><strong>4.6×</strong><div class="small-muted">estimated demo</div></div>
+        </div>
+        <div class="funnel">
+          <div class="funnel-row"><span>Leads received</span><div class="funnel-track"><div class="funnel-fill" style="width:100%"></div></div><b>100%</b></div>
+          <div class="funnel-row"><span>Unlocked</span><div class="funnel-track"><div class="funnel-fill" style="width:58%"></div></div><b>58%</b></div>
+          <div class="funnel-row"><span>Contacted</span><div class="funnel-track"><div class="funnel-fill" style="width:44%"></div></div><b>44%</b></div>
+          <div class="funnel-row"><span>Quoted</span><div class="funnel-track"><div class="funnel-fill" style="width:31%"></div></div><b>31%</b></div>
+        </div>
+        <div class="small-muted" style="margin-top:13px">This view helps the owner explain how businesses measure value while the platform tracks lead sales and recurring revenue.</div>
+      </section>
     </div>
   </div>
+
+  <div id="bizBackdrop" class="biz-backdrop" onclick="closeBizModal()"></div>
+
+  <section id="leadProfileModal" class="biz-modal" aria-hidden="true">
+    <div class="sheet-head" style="padding:0 0 8px">
+      <div><div class="sheet-kicker">Unlocked lead</div><h2 id="leadModalTitle" style="margin:4px 0 0">Customer lead</h2></div>
+      <button class="round-btn" onclick="closeBizModal()"><i data-lucide="x"></i></button>
+    </div>
+    <div id="leadProfileContent"></div>
+  </section>
+
+  <section id="quoteBuilderModal" class="biz-modal" aria-hidden="true">
+    <div class="sheet-head" style="padding:0 0 8px">
+      <div><div class="sheet-kicker">Estimate builder</div><h2 style="margin:4px 0 0">Send a quote</h2></div>
+      <button class="round-btn" onclick="closeBizModal()"><i data-lucide="x"></i></button>
+    </div>
+    <div id="quoteLeadLabel" class="small-muted" style="margin-bottom:14px"></div>
+    <div class="two-col">
+      <div class="field"><label>Labor</label><input id="quoteLabor" type="number" value="180"></div>
+      <div class="field"><label>Parts</label><input id="quoteParts" type="number" value="145"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Estimated time</label><select id="quoteEta"><option>Same day</option><option>1–2 days</option><option>2–3 days</option></select></div>
+      <div class="field"><label>Warranty</label><select id="quoteWarranty"><option>12 months / 12k miles</option><option>6 months</option><option>Shop warranty</option></select></div>
+    </div>
+    <div class="field"><label>Message to customer</label><textarea id="quoteMessage">We can inspect the vehicle and confirm the final repair before starting any additional work.</textarea></div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeBizModal()">Cancel</button>
+      <button class="primary" onclick="sendQuoteDemo()"><i data-lucide="send"></i> Send quote</button>
+    </div>
+  </section>
 
   <div id="toast" class="toast"><i data-lucide="circle-check"></i><span id="toastText">Done</span></div>
 
@@ -640,19 +756,162 @@
     function demoDirections() { showToast('Navigation would open in Maps'); }
     function centerDallas() { map.flyTo([32.7876,-96.8009],13,{duration:.6}); }
 
-    function openBusiness() { closeOverlays(); document.getElementById('businessView').classList.add('open'); document.body.style.overflow='auto'; lucide.createIcons(); }
-    function closeBusiness() { document.getElementById('businessView').classList.remove('open'); document.body.style.overflow='hidden'; }
+    const leadDetails = {
+      contact1: { customer:'Jordan M.', phone:'(214) 555-0184', vehicle:'2018 Honda Accord', service:'Brakes', distance:'3.2 mi', location:'Dallas, TX 75201', urgency:'Today', problem:'Grinding noise when braking. Customer says the noise started yesterday and is louder at low speed.', cost:24 },
+      contact2: { customer:'Marcus T.', phone:'(469) 555-0137', vehicle:'2020 Ford F-150', service:'AC Repair', distance:'5.7 mi', location:'Dallas, TX 75219', urgency:'This week', problem:'AC is blowing warm air. Customer wants a diagnostic and repair estimate.', cost:18 },
+      contact3: { customer:'Avery S.', phone:'(972) 555-0151', vehicle:'2017 Nissan Rogue', service:'Diagnostics', distance:'1.9 mi', location:'Dallas, TX 75204', urgency:'Flexible', problem:'Check engine light came on this morning. Vehicle still drives normally.', cost:12 }
+    };
+    const unlockedLeadIds = new Set();
+    const quotedLeadIds = new Set();
+    let activeLeadId = null;
+
+    function openBusiness() {
+      closeOverlays();
+      document.getElementById('businessView').classList.add('open');
+      document.body.style.overflow='auto';
+      renderMyLeads();
+      lucide.createIcons();
+    }
+    function closeBusiness() { closeBizModal(); document.getElementById('businessView').classList.remove('open'); document.body.style.overflow='hidden'; }
+
+    function scrollBiz(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
     function unlockLead(btn) {
-      if (btn.classList.contains('unlocked')) return;
+      const leadId = btn.dataset.target;
       const cost = Number(btn.dataset.cost);
-      if (credits < cost) return showToast('Not enough credits');
-      credits -= cost;
-      document.getElementById('metricCredits').textContent = credits;
-      document.getElementById('walletCredits').textContent = credits;
-      document.getElementById(btn.dataset.target).style.display='block';
-      btn.classList.add('unlocked');
-      btn.textContent='Unlocked ✓';
-      showToast(cost + ' credits used · Contact details unlocked');
+      if (!btn.classList.contains('unlocked')) {
+        if (credits < cost) return showToast('Not enough credits');
+        credits -= cost;
+        document.getElementById('metricCredits').textContent = credits;
+        document.getElementById('walletCredits').textContent = credits;
+        document.getElementById(leadId).style.display='block';
+        btn.classList.add('unlocked');
+        btn.textContent='View full lead ✓';
+        unlockedLeadIds.add(leadId);
+        renderMyLeads();
+        showToast(cost + ' credits used · Full lead unlocked');
+      }
+      setTimeout(function(){ openLeadProfile(leadId); }, 180);
+    }
+
+    function renderMyLeads() {
+      const list = document.getElementById('myLeadsList');
+      const count = document.getElementById('myLeadsCount');
+      if (!list || !count) return;
+      count.textContent = '(' + unlockedLeadIds.size + ')';
+      if (!unlockedLeadIds.size) {
+        list.innerHTML = '<div class="empty-leads" style="grid-column:1/-1">Unlock a lead above and it will appear here with contact actions, quote status and follow-up.</div>';
+        return;
+      }
+      let html = '';
+      unlockedLeadIds.forEach(function(id) {
+        const l = leadDetails[id];
+        const quoted = quotedLeadIds.has(id);
+        html += '<div class="purchased-lead" onclick="openLeadProfile(\'' + id + '\')">' +
+          '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">' +
+          '<div><h3>' + l.vehicle + ' · ' + l.service + '</h3><div class="small-muted">' + l.customer + ' · ' + l.distance + ' · ' + l.urgency + '</div></div>' +
+          '<span class="lead-status ' + (quoted ? 'quoted' : '') + '">' + (quoted ? 'Quote sent' : 'Unlocked') + '</span></div>' +
+          '<div class="small-muted" style="margin-top:9px">' + l.phone + '</div>' +
+          '</div>';
+      });
+      list.innerHTML = html;
+    }
+
+    function openLeadProfile(leadId) {
+      const l = leadDetails[leadId];
+      if (!l) return;
+      activeLeadId = leadId;
+      document.getElementById('leadModalTitle').textContent = l.vehicle + ' · ' + l.service;
+      let quoteBlock = quotedLeadIds.has(leadId) ? '<div class="quote-preview"><div class="small-muted">Latest activity</div><strong>Quote sent ✓</strong><div class="small-muted">Customer can review the estimate in the driver experience.</div></div>' : '';
+      document.getElementById('leadProfileContent').innerHTML =
+        '<div class="lead-profile-hero"><div class="small-muted">Customer unlocked</div><h3>' + l.customer + '</h3><div style="margin-top:7px;font-weight:850">' + l.phone + '</div></div>' +
+        '<div class="lead-info-grid">' +
+          '<div class="lead-info"><span>Vehicle</span><strong>' + l.vehicle + '</strong></div>' +
+          '<div class="lead-info"><span>Service</span><strong>' + l.service + '</strong></div>' +
+          '<div class="lead-info"><span>Location</span><strong>' + l.location + ' · ' + l.distance + '</strong></div>' +
+          '<div class="lead-info"><span>Timing</span><strong>' + l.urgency + '</strong></div>' +
+        '</div>' +
+        '<div class="small-muted">Customer description</div><div class="problem-box">' + l.problem + '</div>' +
+        '<div class="contact-actions">' +
+          '<button class="primary-contact" onclick="contactLead(\'' + leadId + '\',\'call\')"><i data-lucide="phone"></i> Call customer</button>' +
+          '<button onclick="contactLead(\'' + leadId + '\',\'chat\')"><i data-lucide="message-circle"></i> Open chat</button>' +
+          '<button onclick="openQuoteBuilder(\'' + leadId + '\')"><i data-lucide="receipt-text"></i> Send quote</button>' +
+          '<button onclick="contactLead(\'' + leadId + '\',\'contacted\')"><i data-lucide="circle-check-big"></i> Mark contacted</button>' +
+        '</div>' + quoteBlock;
+      document.getElementById('leadProfileModal').classList.add('open');
+      document.getElementById('bizBackdrop').classList.add('open');
+      lucide.createIcons();
+    }
+
+    function contactLead(leadId, action) {
+      const l = leadDetails[leadId];
+      if (action === 'call') showToast('Demo: calling ' + l.customer + ' at ' + l.phone);
+      if (action === 'chat') showToast('Demo chat opened with ' + l.customer);
+      if (action === 'contacted') showToast(l.customer + ' marked as contacted');
+    }
+
+    function openQuoteBuilder(leadId) {
+      activeLeadId = leadId;
+      const l = leadDetails[leadId];
+      document.getElementById('leadProfileModal').classList.remove('open');
+      document.getElementById('quoteLeadLabel').textContent = l.customer + ' · ' + l.vehicle + ' · ' + l.service;
+      document.getElementById('quoteBuilderModal').classList.add('open');
+      document.getElementById('bizBackdrop').classList.add('open');
+      lucide.createIcons();
+    }
+
+    function sendQuoteDemo() {
+      if (!activeLeadId) return;
+      const labor = Number(document.getElementById('quoteLabor').value || 0);
+      const parts = Number(document.getElementById('quoteParts').value || 0);
+      const total = labor + parts;
+      quotedLeadIds.add(activeLeadId);
+      closeBizModal();
+      renderMyLeads();
+      showToast('Quote sent · 
+    function showToast(message) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastText').textContent = message;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>t.classList.remove('show'),2600);
+      lucide.createIcons();
+    }
+    function setNav(el) {
+      document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    document.getElementById('chips').addEventListener('click', e => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderMarkers();
+      renderCards(document.getElementById('search').value);
+    });
+    document.getElementById('search').addEventListener('input', e => renderCards(e.target.value));
+
+    window.addEventListener('load', () => {
+      initMap();
+      renderCards();
+      lucide.createIcons();
+      setTimeout(()=>map.invalidateSize(),100);
+    });
+  </script>
+</body>
+</html> + total.toFixed(2) + ' · Customer notified');
+      setTimeout(function(){ scrollBiz('myLeadsSection'); }, 250);
+    }
+
+    function closeBizModal() {
+      document.getElementById('leadProfileModal').classList.remove('open');
+      document.getElementById('quoteBuilderModal').classList.remove('open');
+      document.getElementById('bizBackdrop').classList.remove('open');
     }
 
     let toastTimer;
