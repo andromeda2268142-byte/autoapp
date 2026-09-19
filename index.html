@@ -871,40 +871,7 @@
       quotedLeadIds.add(activeLeadId);
       closeBizModal();
       renderMyLeads();
-      showToast('Quote sent · 
-    function showToast(message) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastText').textContent = message;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>t.classList.remove('show'),2600);
-      lucide.createIcons();
-    }
-    function setNav(el) {
-      document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
-      el.classList.add('active');
-    }
-
-    document.getElementById('chips').addEventListener('click', e => {
-      const btn = e.target.closest('.chip');
-      if (!btn) return;
-      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      renderMarkers();
-      renderCards(document.getElementById('search').value);
-    });
-    document.getElementById('search').addEventListener('input', e => renderCards(e.target.value));
-
-    window.addEventListener('load', () => {
-      initMap();
-      renderCards();
-      lucide.createIcons();
-      setTimeout(()=>map.invalidateSize(),100);
-    });
-  </script>
-</body>
-</html> + total.toFixed(2) + ' · Customer notified');
+      showToast('Quote sent · $' + total.toFixed(2) + ' · Customer notified');
       setTimeout(function(){ scrollBiz('myLeadsSection'); }, 250);
     }
 
@@ -923,6 +890,7 @@
       toastTimer = setTimeout(()=>t.classList.remove('show'),2600);
       lucide.createIcons();
     }
+
     function setNav(el) {
       document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
       el.classList.add('active');
@@ -937,6 +905,7 @@
       renderMarkers();
       renderCards(document.getElementById('search').value);
     });
+
     document.getElementById('search').addEventListener('input', e => renderCards(e.target.value));
 
     window.addEventListener('load', () => {
