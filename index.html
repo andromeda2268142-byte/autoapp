@@ -343,6 +343,44 @@
       .biz-modal.open { transform:translate(-50%,0); }
     }
 
+  
+    .garage-hero { background:linear-gradient(135deg,var(--lime-soft),#fff7d7); border:1px solid #dfeebc; border-radius:22px; padding:18px; margin-bottom:14px; }
+    .garage-hero-top { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+    .garage-car-name { font-size:24px; line-height:1.05; font-weight:950; letter-spacing:-.8px; margin-top:4px; }
+    .garage-badge { background:#fff; border:1px solid rgba(0,0,0,.07); border-radius:999px; padding:7px 9px; font-size:10px; font-weight:900; white-space:nowrap; }
+    .garage-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0; }
+    .garage-stat { border:1px solid var(--line); background:#fff; border-radius:15px; padding:11px; }
+    .garage-stat span { display:block; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; font-weight:850; }
+    .garage-stat strong { display:block; margin-top:4px; font-size:13px; }
+    .maintenance-list { display:grid; gap:8px; margin-top:10px; }
+    .maintenance-item { border:1px solid var(--line); border-radius:16px; padding:12px; background:#fff; display:grid; grid-template-columns:34px 1fr auto; gap:10px; align-items:center; }
+    .maintenance-icon { width:34px; height:34px; border-radius:11px; display:grid; place-items:center; background:var(--violet-soft); color:#6547bf; }
+    .maintenance-icon svg { width:16px; }
+    .maintenance-item strong { display:block; font-size:12px; }
+    .maintenance-item small { display:block; color:var(--muted); font-size:10px; margin-top:2px; }
+    .maintenance-status { font-size:9px; font-weight:900; border-radius:999px; padding:6px 8px; background:var(--mint-soft); color:#216a54; }
+    .maintenance-status.due { background:var(--sun-soft); color:#805a00; }
+    .profile-hero { display:flex; align-items:center; gap:13px; padding:16px; background:linear-gradient(135deg,var(--violet-soft),#fff); border:1px solid #ddd3fb; border-radius:22px; margin-bottom:14px; }
+    .profile-avatar { width:52px; height:52px; border-radius:18px; display:grid; place-items:center; background:var(--ink); color:#fff; font-size:17px; font-weight:950; }
+    .profile-hero h3 { margin:0; font-size:19px; letter-spacing:-.5px; }
+    .profile-hero p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+    .profile-menu { display:grid; gap:8px; margin-top:10px; }
+    .profile-row { border:1px solid var(--line); background:#fff; border-radius:16px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .profile-row-left { display:flex; align-items:center; gap:10px; min-width:0; }
+    .profile-row-icon { width:34px; height:34px; border-radius:11px; display:grid; place-items:center; background:#f2f0e9; color:var(--ink); }
+    .profile-row-icon svg { width:16px; }
+    .profile-row strong { display:block; font-size:12px; }
+    .profile-row small { display:block; color:var(--muted); font-size:10px; margin-top:2px; }
+    .profile-row > svg { width:16px; color:var(--muted); }
+    .usage-guard { margin-top:14px; border:1px dashed #d0cbbd; background:#faf8f2; border-radius:17px; padding:12px; }
+    .usage-guard strong { font-size:11px; }
+    .usage-guard p { margin:5px 0 0; color:var(--muted); font-size:10px; line-height:1.45; }
+    @media (max-width:520px) {
+      .garage-stats { grid-template-columns:1fr; }
+      .maintenance-item { grid-template-columns:34px 1fr; }
+      .maintenance-status { grid-column:2; justify-self:start; }
+    }
+
   </style>
 </head>
 <body>
@@ -384,10 +422,10 @@
       <div id="cards" class="cards"></div>
 
       <nav class="desktop-nav">
-        <button class="nav-btn active" onclick="setNav(this)"><i data-lucide="map"></i>Explore</button>
-        <button class="nav-btn" onclick="openQuote()"><i data-lucide="clipboard-plus"></i>Request</button>
-        <button class="nav-btn" onclick="showToast('Garage demo: 2019 Toyota Camry selected')"><i data-lucide="car-front"></i>Garage</button>
-        <button class="nav-btn" onclick="showToast('Profile demo opened')"><i data-lucide="circle-user-round"></i>Profile</button>
+        <button class="nav-btn active" onclick="setNav(this); closeOverlays()"><i data-lucide="map"></i>Explore</button>
+        <button class="nav-btn" onclick="setNav(this); openQuote()"><i data-lucide="clipboard-plus"></i>Request</button>
+        <button class="nav-btn" onclick="openGarage(this)"><i data-lucide="car-front"></i>Garage</button>
+        <button class="nav-btn" onclick="openProfile(this)"><i data-lucide="circle-user-round"></i>Profile</button>
       </nav>
     </aside>
 
@@ -739,6 +777,84 @@
     }
     function openQuote() { openModal('quoteModal'); }
     function openTow() { openModal('towModal'); }
+
+    function openGarage(navEl) {
+      if (navEl) setNav(navEl);
+      closeOverlays();
+      document.getElementById('sheetContent').innerHTML = `
+        <div class="sheet-head">
+          <div><div class="sheet-kicker">My Garage</div><h2 class="sheet-title">Your vehicle</h2><div class="small-muted" style="margin-top:6px">Vehicle profile, maintenance and service requests in one place.</div></div>
+          <button class="round-btn" onclick="closeSheet()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="sheet-scroll">
+          <div class="garage-hero">
+            <div class="garage-hero-top">
+              <div><div class="small-muted">Primary vehicle</div><div class="garage-car-name">2019 Toyota Camry SE</div><div class="small-muted" style="margin-top:6px">2.5L · Automatic · Regular fuel</div></div>
+              <span class="garage-badge">Active</span>
+            </div>
+          </div>
+          <div class="garage-stats">
+            <div class="garage-stat"><span>Mileage</span><strong>67,420 mi</strong></div>
+            <div class="garage-stat"><span>Next service</span><strong>1,580 mi</strong></div>
+            <div class="garage-stat"><span>Fuel</span><strong>Regular</strong></div>
+          </div>
+          <div class="action-row" style="margin-bottom:16px">
+            <button class="primary" onclick="openQuote()"><i data-lucide="wrench"></i> Request service</button>
+            <button class="secondary" onclick="showToast('Add vehicle flow opened')"><i data-lucide="plus"></i> Add vehicle</button>
+          </div>
+          <div class="section-title-row"><h2>Maintenance</h2><span>Demo history</span></div>
+          <div class="maintenance-list">
+            <div class="maintenance-item">
+              <div class="maintenance-icon"><i data-lucide="droplets"></i></div>
+              <div><strong>Oil & filter change</strong><small>Completed · 64,980 mi</small></div>
+              <span class="maintenance-status">Done</span>
+            </div>
+            <div class="maintenance-item">
+              <div class="maintenance-icon"><i data-lucide="disc-3"></i></div>
+              <div><strong>Brake inspection</strong><small>Recommended within 30 days</small></div>
+              <span class="maintenance-status due">Due soon</span>
+            </div>
+            <div class="maintenance-item">
+              <div class="maintenance-icon"><i data-lucide="battery-charging"></i></div>
+              <div><strong>Battery health check</strong><small>Last checked 5 months ago</small></div>
+              <span class="maintenance-status">Good</span>
+            </div>
+          </div>
+          <div class="usage-guard"><strong>Vehicle data in production</strong><p>Users will be able to add VIN, mileage, service history and maintenance reminders. Sensitive information should remain private to the account.</p></div>
+        </div>`;
+      document.getElementById('sheet').classList.add('open');
+      document.getElementById('sheet').setAttribute('aria-hidden','false');
+      document.getElementById('backdrop').classList.add('open');
+      lucide.createIcons();
+    }
+
+    function openProfile(navEl) {
+      if (navEl) setNav(navEl);
+      closeOverlays();
+      document.getElementById('sheetContent').innerHTML = `
+        <div class="sheet-head">
+          <div><div class="sheet-kicker">Driver profile</div><h2 class="sheet-title">Account</h2><div class="small-muted" style="margin-top:6px">Preferences, saved places and account controls.</div></div>
+          <button class="round-btn" onclick="closeSheet()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="sheet-scroll">
+          <div class="profile-hero">
+            <div class="profile-avatar">AD</div>
+            <div><h3>Alex Driver</h3><p>Dallas–Fort Worth · Verified phone</p></div>
+          </div>
+          <div class="profile-menu">
+            <div class="profile-row" onclick="showToast('Saved places opened')"><div class="profile-row-left"><div class="profile-row-icon"><i data-lucide="heart"></i></div><div><strong>Saved places</strong><small>4 favorites</small></div></div><i data-lucide="chevron-right"></i></div>
+            <div class="profile-row" onclick="showToast('Fuel preferences opened')"><div class="profile-row-left"><div class="profile-row-icon"><i data-lucide="fuel"></i></div><div><strong>Fuel preferences</strong><small>Regular · show cheapest nearby</small></div></div><i data-lucide="chevron-right"></i></div>
+            <div class="profile-row" onclick="showToast('Notifications settings opened')"><div class="profile-row-left"><div class="profile-row-icon"><i data-lucide="bell"></i></div><div><strong>Notifications</strong><small>Price alerts and service updates</small></div></div><i data-lucide="chevron-right"></i></div>
+            <div class="profile-row" onclick="showToast('Payment methods opened')"><div class="profile-row-left"><div class="profile-row-icon"><i data-lucide="credit-card"></i></div><div><strong>Payments</strong><small>Manage cards and receipts</small></div></div><i data-lucide="chevron-right"></i></div>
+            <div class="profile-row" onclick="showToast('Privacy controls opened')"><div class="profile-row-left"><div class="profile-row-icon"><i data-lucide="shield-check"></i></div><div><strong>Privacy & account</strong><small>Location, data and security controls</small></div></div><i data-lucide="chevron-right"></i></div>
+          </div>
+          <div class="usage-guard"><strong>Gas-price usage protection</strong><p>When production API usage approaches the agreed monthly search threshold, the system will alert the owner before allowing additional paid usage.</p></div>
+        </div>`;
+      document.getElementById('sheet').classList.add('open');
+      document.getElementById('sheet').setAttribute('aria-hidden','false');
+      document.getElementById('backdrop').classList.add('open');
+      lucide.createIcons();
+    }
     function closeOverlays() {
       ['quoteModal','towModal'].forEach(id => { document.getElementById(id).classList.remove('open'); document.getElementById(id).setAttribute('aria-hidden','true'); });
       closeSheet();
