@@ -115,7 +115,7 @@
     .price-main { font-weight:900; font-size:18px; letter-spacing:-.6px; text-align:right; }
     .price-caption { font-size:10px; color:var(--muted); text-align:right; margin-top:2px; }
 
-    .desktop-nav { position:absolute; left:14px; right:14px; bottom:14px; background:rgba(34,37,31,.96); backdrop-filter:blur(16px); border-radius:20px; padding:8px; display:grid; grid-template-columns:repeat(4,1fr); gap:5px; box-shadow:var(--shadow); }
+    .desktop-nav { position:absolute; left:14px; right:14px; bottom:14px; background:rgba(34,37,31,.96); backdrop-filter:blur(16px); border-radius:20px; padding:8px; display:grid; grid-template-columns:repeat(5,1fr); gap:5px; box-shadow:var(--shadow); }
     .nav-btn { border:0; background:transparent; color:#d9d8d2; border-radius:14px; padding:8px 5px; display:grid; justify-items:center; gap:3px; font-size:9px; font-weight:750; }
     .nav-btn svg { width:18px; height:18px; }
     .nav-btn.active { color:var(--ink); background:var(--lime); }
@@ -268,7 +268,7 @@
       .legend { display:none; }
       .desktop-nav {
         position:fixed; z-index:700; left:12px; right:12px; bottom:calc(10px + env(safe-area-inset-bottom)); height:64px; pointer-events:auto;
-        grid-template-columns:repeat(4,1fr); border-radius:20px;
+        grid-template-columns:repeat(5,1fr); border-radius:20px;
       }
       .nav-btn { font-size:9px; }
       .sheet {
@@ -381,6 +381,37 @@
       .maintenance-status { grid-column:2; justify-self:start; }
     }
 
+  
+    .checklist-summary { background:linear-gradient(135deg,var(--lime-soft),#fffdf8); border:1px solid #d9eab7; border-radius:22px; padding:16px; margin-bottom:14px; }
+    .checklist-summary-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .checklist-summary h3 { margin:0; font-size:18px; letter-spacing:-.4px; }
+    .checklist-summary p { margin:5px 0 0; color:var(--muted); font-size:11px; line-height:1.5; }
+    .checklist-percent { min-width:54px; height:54px; border-radius:18px; background:var(--ink); color:var(--lime); display:grid; place-items:center; font-weight:950; font-size:16px; }
+    .checklist-progress { height:9px; background:#e8e5dc; border-radius:999px; overflow:hidden; margin-top:13px; }
+    .checklist-progress > div { height:100%; width:0; background:var(--coral); border-radius:inherit; transition:.25s; }
+    .checklist-list { display:grid; gap:9px; padding-bottom:8px; }
+    .check-item { border:1px solid var(--line); border-radius:18px; background:#fff; overflow:hidden; }
+    .check-main { display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:center; padding:12px; }
+    .check-toggle { width:30px; height:30px; border-radius:10px; border:1px solid #c9c6bc; background:#faf9f5; display:grid; place-items:center; padding:0; }
+    .check-toggle.done { background:var(--mint-soft); border-color:#b7e8d6; color:#216a54; }
+    .check-toggle svg { width:16px; }
+    .check-copy strong { display:block; font-size:12px; }
+    .check-copy small { display:block; color:var(--muted); font-size:10px; line-height:1.4; margin-top:3px; }
+    .more-info-btn { border:1px solid var(--line); background:#f8f6f0; color:var(--ink); border-radius:11px; min-height:34px; padding:0 9px; font-size:9px; font-weight:900; white-space:nowrap; }
+    .check-details { display:none; border-top:1px solid var(--line); background:#faf8f2; padding:12px 14px 14px 58px; font-size:10px; color:#575950; line-height:1.55; }
+    .check-details.open { display:block; }
+    .check-details b { color:var(--ink); }
+    .check-details ul { margin:7px 0 0 16px; padding:0; }
+    .check-details li { margin:3px 0; }
+    .checklist-note { margin-top:12px; border:1px dashed #d2cec1; border-radius:16px; padding:11px 12px; background:#fffdf8; color:var(--muted); font-size:9px; line-height:1.5; }
+    @media (max-width:520px) {
+      .check-main { grid-template-columns:34px 1fr; }
+      .more-info-btn { grid-column:2; justify-self:start; }
+      .check-details { padding-left:56px; }
+      .desktop-nav { left:8px; right:8px; }
+      .nav-btn { font-size:8px; padding-left:2px; padding-right:2px; }
+    }
+
   </style>
 </head>
 <body>
@@ -425,6 +456,7 @@
         <button class="nav-btn active" onclick="setNav(this); closeOverlays()"><i data-lucide="map"></i>Explore</button>
         <button class="nav-btn" onclick="setNav(this); openQuote()"><i data-lucide="clipboard-plus"></i>Request</button>
         <button class="nav-btn" onclick="openGarage(this)"><i data-lucide="car-front"></i>Garage</button>
+        <button class="nav-btn" onclick="openChecklist(this)"><i data-lucide="list-checks"></i>Checklist</button>
         <button class="nav-btn" onclick="openProfile(this)"><i data-lucide="circle-user-round"></i>Profile</button>
       </nav>
     </aside>
@@ -826,6 +858,168 @@
       document.getElementById('sheet').setAttribute('aria-hidden','false');
       document.getElementById('backdrop').classList.add('open');
       lucide.createIcons();
+    }
+
+    const ownerChecklist = [
+      {
+        id:'company',
+        title:'1. Confirmar la empresa y el nombre legal',
+        short:'Elegir el nombre de la LLC y quién será el dueño/representante principal.',
+        detail:'Para este proyecto, la LLC puede ser más general que el nombre de la app. Gas Car\'s puede operar como marca o DBA. Si el dueño principal administra la empresa desde Washington, Washington es una opción lógica para formar la LLC.',
+        needs:['Nombre legal deseado','Nombre y dirección del dueño principal','Porcentaje/estructura de propietarios','Dirección comercial que usarán']
+      },
+      {
+        id:'llc',
+        title:'2. Crear la LLC',
+        short:'Registrar oficialmente la compañía antes de abrir las cuentas principales.',
+        detail:'Presentar la formación de la LLC con el estado elegido y guardar todos los documentos oficiales. La empresa debe tener un Registered Agent con dirección física válida en ese estado.',
+        needs:['Nombre aprobado de la LLC','Registered Agent','Dirección de la empresa','Documentos de formación']
+      },
+      {
+        id:'ein',
+        title:'3. Solicitar el EIN',
+        short:'Obtener el número fiscal federal de la empresa con el IRS.',
+        detail:'El EIN funciona como identificador fiscal federal de la LLC. Se utiliza para banco, Stripe, formularios fiscales y varias cuentas empresariales.',
+        needs:['LLC ya creada','Nombre legal exacto','Información del responsable de la empresa']
+      },
+      {
+        id:'bank',
+        title:'4. Abrir la cuenta bancaria empresarial',
+        short:'Separar totalmente el dinero del negocio del dinero personal.',
+        detail:'Abrir una cuenta bancaria a nombre de la LLC. Desde esta cuenta deberían salir los gastos de la app y entrar los ingresos de la plataforma.',
+        needs:['EIN','Documentos de la LLC','ID del representante','Información de propietarios según el banco']
+      },
+      {
+        id:'domain',
+        title:'5. Dominio, website y email corporativo',
+        short:'Preparar la identidad digital oficial de la empresa.',
+        detail:'Comprar el dominio, crear una web pública sencilla y correos empresariales. Esto ayuda con verificaciones y será la base para soporte, Privacy Policy y Terms.',
+        needs:['Dominio elegido','Email tipo support@ / admin@','Website público básico','Información de contacto']
+      },
+      {
+        id:'duns',
+        title:'6. Obtener o verificar D-U-N-S',
+        short:'Verificar la identidad comercial para cuentas de organización.',
+        detail:'El nombre, dirección y teléfono deben coincidir con los registros oficiales de la LLC. Si ya existe un D-U-N-S, verificarlo antes de crear las cuentas de publicación.',
+        needs:['Nombre legal exacto','Dirección comercial','Teléfono empresarial','Datos de la LLC']
+      },
+      {
+        id:'apple',
+        title:'7. Apple Developer — Organization',
+        short:'Crear la cuenta que será dueña de la app en App Store.',
+        detail:'El cliente debe ser el Account Holder. Después puede invitar al desarrollador para trabajar sin entregar la propiedad de la cuenta.',
+        needs:['Apple Account con 2FA','LLC/entidad legal','D-U-N-S','Website y email corporativo','Método de pago']
+      },
+      {
+        id:'googleplay',
+        title:'8. Google Play Console — Organization',
+        short:'Crear la cuenta que publicará la app en Android.',
+        detail:'Registrar la cuenta como organización usando los datos legales reales de la empresa y completar las verificaciones de identidad y contacto que solicite Google.',
+        needs:['Cuenta Google empresarial','Datos legales de la LLC','D-U-N-S si se solicita/usa','Website','Email y teléfono verificables','Método de pago']
+      },
+      {
+        id:'stripe',
+        title:'9. Stripe / pagos del negocio',
+        short:'Preparar la cuenta que recibirá pagos de leads y planes.',
+        detail:'Stripe debe quedar a nombre de la compañía y conectado a la cuenta bancaria empresarial. Aquí se recibirán los pagos del modelo Pay-per-Lead y futuras suscripciones.',
+        needs:['LLC','EIN','Cuenta bancaria','Datos del representante','Website y descripción del negocio']
+      },
+      {
+        id:'cloud',
+        title:'10. Google Cloud / Maps y APIs',
+        short:'Crear la cuenta de producción para mapas, lugares y gasolina.',
+        detail:'La cuenta y billing deben pertenecer al cliente. El desarrollador recibe acceso técnico. Se configurarán límites y alertas de gasto antes del lanzamiento.',
+        needs:['Cuenta Google empresarial','Método de pago empresarial','Presupuesto mensual aprobado','Acceso para el desarrollador']
+      },
+      {
+        id:'infra',
+        title:'11. Supabase, Vercel y servicios técnicos',
+        short:'Crear las cuentas de producción de backend y hosting.',
+        detail:'Estas cuentas almacenarán y ejecutarán partes críticas de la plataforma. Deben pertenecer a la empresa; el desarrollador trabaja mediante invitación.',
+        needs:['Email corporativo','Método de pago','Persona responsable de billing','Invitación de acceso técnico']
+      },
+      {
+        id:'legal',
+        title:'12. Información legal y pública de la app',
+        short:'Preparar lo necesario antes de publicar para usuarios reales.',
+        detail:'Definir qué datos recopila Gas Car\'s y publicar documentos básicos. Antes de producción deberán existir Privacy Policy y Terms of Service adecuados al funcionamiento real de la app.',
+        needs:['Email de soporte','Teléfono de soporte','Dirección comercial','Privacy Policy','Terms of Service','Política de reembolsos/disputas']
+      },
+      {
+        id:'access',
+        title:'13. Invitar al desarrollador',
+        short:'Dar acceso técnico sin compartir contraseñas ni perder propiedad.',
+        detail:'El cliente mantiene la propiedad de todas las cuentas. Debe invitar al desarrollador con el rol necesario en Apple, Google, Stripe, Supabase, Vercel y Google Cloud.',
+        needs:['Cuentas anteriores creadas','Roles/permisos adecuados','2FA activado','Nunca enviar contraseñas por mensaje']
+      }
+    ];
+
+    function getChecklistState() {
+      try { return JSON.parse(localStorage.getItem('gascars_owner_checklist') || '{}'); }
+      catch(e) { return {}; }
+    }
+
+    function saveChecklistState(state) {
+      localStorage.setItem('gascars_owner_checklist', JSON.stringify(state));
+    }
+
+    function openChecklist(navEl) {
+      if (navEl) setNav(navEl);
+      closeOverlays();
+      renderChecklist();
+      document.getElementById('sheet').classList.add('open');
+      document.getElementById('sheet').setAttribute('aria-hidden','false');
+      document.getElementById('backdrop').classList.add('open');
+      lucide.createIcons();
+    }
+
+    function renderChecklist() {
+      const state = getChecklistState();
+      const done = ownerChecklist.filter(x => state[x.id]).length;
+      const pct = Math.round((done / ownerChecklist.length) * 100);
+      const items = ownerChecklist.map(step => {
+        const checked = !!state[step.id];
+        const needs = step.needs.map(x => '<li>' + x + '</li>').join('');
+        return '<div class="check-item">' +
+          '<div class="check-main">' +
+            '<button class="check-toggle ' + (checked ? 'done' : '') + '" onclick="toggleChecklistStep(\'' + step.id + '\')" aria-label="Mark step complete">' +
+              '<i data-lucide="' + (checked ? 'check' : 'circle') + '"></i>' +
+            '</button>' +
+            '<div class="check-copy"><strong>' + step.title + '</strong><small>' + step.short + '</small></div>' +
+            '<button class="more-info-btn" onclick="toggleChecklistInfo(\'' + step.id + '\')">Más información</button>' +
+          '</div>' +
+          '<div class="check-details" id="checkInfo-' + step.id + '"><b>Cómo cumplir este paso:</b> ' + step.detail + '<br><b>Preparar:</b><ul>' + needs + '</ul></div>' +
+        '</div>';
+      }).join('');
+
+      document.getElementById('sheetContent').innerHTML =
+        '<div class="sheet-head">' +
+          '<div><div class="sheet-kicker">Owner launch checklist</div><h2 class="sheet-title">Checklist del cliente</h2><div class="small-muted" style="margin-top:6px">Pasos que los propietarios deben completar para preparar Gas Car\'s para producción.</div></div>' +
+          '<button class="round-btn" onclick="closeSheet()"><i data-lucide="x"></i></button>' +
+        '</div>' +
+        '<div class="sheet-scroll">' +
+          '<div class="checklist-summary">' +
+            '<div class="checklist-summary-top"><div><h3>' + done + ' de ' + ownerChecklist.length + ' completados</h3><p>Marquen cada paso a medida que lo terminen. El progreso queda guardado en este navegador.</p></div><div class="checklist-percent">' + pct + '%</div></div>' +
+            '<div class="checklist-progress"><div style="width:' + pct + '%"></div></div>' +
+          '</div>' +
+          '<div class="checklist-list">' + items + '</div>' +
+          '<div class="checklist-note"><b>Nota:</b> Este checklist organiza el proceso operativo. Los requisitos legales, fiscales y de verificación pueden variar; cuando corresponda, la empresa debe confirmarlos con el estado, IRS, Apple, Google, banco o asesor profesional.</div>' +
+        '</div>';
+      lucide.createIcons();
+    }
+
+    function toggleChecklistStep(id) {
+      const state = getChecklistState();
+      state[id] = !state[id];
+      saveChecklistState(state);
+      renderChecklist();
+      showToast(state[id] ? 'Step marked complete' : 'Step reopened');
+    }
+
+    function toggleChecklistInfo(id) {
+      const el = document.getElementById('checkInfo-' + id);
+      if (!el) return;
+      el.classList.toggle('open');
     }
 
     function openProfile(navEl) {
