@@ -158,7 +158,8 @@
     .sheet-head { padding:18px 18px 12px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .sheet-kicker { font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); }
     .sheet-title { margin:4px 0 0; font-size:24px; line-height:1.04; letter-spacing:-.8px; }
-    .sheet-scroll { overflow-y:auto; padding:0 18px 24px; }
+    #sheetContent { height:100%; min-height:0; display:flex; flex-direction:column; }
+    .sheet-scroll { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:0 18px 24px; }
     .hero-band { border-radius:22px; padding:18px; background:linear-gradient(135deg,var(--coral-soft),#fff0c9); margin-bottom:14px; }
     .hero-band.violet { background:linear-gradient(135deg,var(--violet-soft),#f5efff); }
     .hero-band.mint { background:linear-gradient(135deg,var(--mint-soft),#effcf6); }
